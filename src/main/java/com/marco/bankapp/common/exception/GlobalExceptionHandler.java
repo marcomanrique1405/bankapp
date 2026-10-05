@@ -43,28 +43,6 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<ApiError> handleConflict(
-            ConflictException exception,
-            HttpServletRequest request
-    ) {
-        HttpStatus status = HttpStatus.CONFLICT;
-
-        ApiError error = new ApiError(
-                Instant.now(),
-                status.value(),
-                exception.getCode(),
-                exception.getMessage(),
-                request.getRequestURI()
-        );
-
-        return ResponseEntity
-                .status(status)
-                .body(error);
-
-    }
-
-
     @ExceptionHandler(InvalidRequestException.class)
     public ResponseEntity<ApiError> handleInvalidRequest(
             InvalidRequestException exception,
@@ -86,25 +64,18 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiError> handleUnexpectedException(
-            Exception exception,
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ApiError> handleConflict(
+            ConflictException exception,
             HttpServletRequest request
     ) {
-
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-
-        log.error(
-                "Unhandled exception while processing request {}",
-                request.getRequestURI(),
-                exception
-        );
+        HttpStatus status = HttpStatus.CONFLICT;
 
         ApiError error = new ApiError(
                 Instant.now(),
                 status.value(),
-                "INTERNAL_SERVER_ERROR",
-                "An unexpected error occurred",
+                exception.getCode(),
+                exception.getMessage(),
                 request.getRequestURI()
         );
 
@@ -141,6 +112,35 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(status)
                 .body(error);
+    }
+
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiError> handleUnexpectedException(
+            Exception exception,
+            HttpServletRequest request
+    ) {
+
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        log.error(
+                "Unhandled exception while processing request {}",
+                request.getRequestURI(),
+                exception
+        );
+
+        ApiError error = new ApiError(
+                Instant.now(),
+                status.value(),
+                "INTERNAL_SERVER_ERROR",
+                "An unexpected error occurred",
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(status)
+                .body(error);
+
     }
 
 
