@@ -64,28 +64,6 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<ApiError> handleConflict(
-            ConflictException exception,
-            HttpServletRequest request
-    ) {
-        HttpStatus status = HttpStatus.CONFLICT;
-
-        ApiError error = new ApiError(
-                Instant.now(),
-                status.value(),
-                exception.getCode(),
-                exception.getMessage(),
-                request.getRequestURI()
-        );
-
-        return ResponseEntity
-                .status(status)
-                .body(error);
-
-    }
-
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidation(
             MethodArgumentNotValidException exception,
@@ -113,6 +91,29 @@ public class GlobalExceptionHandler {
                 .status(status)
                 .body(error);
     }
+
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ApiError> handleConflict(
+            ConflictException exception,
+            HttpServletRequest request
+    ) {
+        HttpStatus status = HttpStatus.CONFLICT;
+
+        ApiError error = new ApiError(
+                Instant.now(),
+                status.value(),
+                exception.getCode(),
+                exception.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(status)
+                .body(error);
+
+    }
+
 
 
     @ExceptionHandler(Exception.class)
