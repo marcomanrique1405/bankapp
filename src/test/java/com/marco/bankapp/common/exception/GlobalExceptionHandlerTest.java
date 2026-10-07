@@ -2,6 +2,7 @@ package com.marco.bankapp.common.exception;
 
 import com.marco.bankapp.common.api.ApiError;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.coyote.Response;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AccessDeniedException;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -231,6 +233,56 @@ class GlobalExceptionHandlerTest {
                 "/api/auth/register",
                 response.getBody().path()
         );
+    }
+
+
+    @Test
+    void shouldReturn403WhenAccessIsDenied(){
+
+        HttpServletRequest request =
+                mock(HttpServletRequest.class);
+
+        when(request.getRequestURI())
+                .thenReturn("/api/admin/users");
+
+        AccessDeniedException exception =
+                new AccessDeniedException("Access denied");
+
+        ResponseEntity<ApiError> response =
+                handler.handleAccessDenied(
+                        exception,
+                        request
+                );
+
+        assertNotNull(
+                response.getBody()
+        );
+
+        assertEquals(
+                HttpStatus.FORBIDDEN,
+                response.getStatusCode()
+        );
+
+        assertEquals(
+                "ACCESS_DENIED",
+                response.getBody().code()
+        );
+
+        assertEquals(
+                403,
+                response.getBody().status()
+        );
+
+        assertEquals(
+                "You do not have permission to access this resource",
+                response.getBody().message()
+        );
+
+        assertEquals(
+                "/api/admin/users",
+                response.getBody().path()
+        );
+
     }
 
 }
