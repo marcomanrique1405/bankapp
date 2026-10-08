@@ -2,7 +2,6 @@ package com.marco.bankapp.common.exception;
 
 import com.marco.bankapp.common.api.ApiError;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.coyote.Response;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +9,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessDeniedException;
 
 import static org.mockito.Mockito.mock;
@@ -237,7 +235,7 @@ class GlobalExceptionHandlerTest {
 
 
     @Test
-    void shouldReturn403WhenAccessIsDenied(){
+    void shouldReturn403WhenAccessIsDenied() {
 
         HttpServletRequest request =
                 mock(HttpServletRequest.class);
@@ -280,6 +278,56 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(
                 "/api/admin/users",
+                response.getBody().path()
+        );
+
+    }
+
+
+    @Test
+    void shouldReturn500WhenUnexpectedExceptionOccurs() {
+
+        HttpServletRequest request =
+                mock(HttpServletRequest.class);
+
+        when(request.getRequestURI())
+                .thenReturn("/api/accounts");
+
+        Exception exception =
+                new RuntimeException("Sensitive internal database error");
+
+        ResponseEntity<ApiError> response =
+                handler.handleUnexpectedException(
+                        exception,
+                        request
+                );
+
+        assertEquals(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                response.getStatusCode()
+        );
+
+        assertNotNull(
+                response.getBody()
+        );
+
+        assertEquals(
+                500,
+                response.getBody().status()
+        );
+
+        assertEquals(
+                "INTERNAL_SERVER_ERROR",
+                response.getBody().code()
+        );
+
+        assertEquals(
+                "An unexpected error occurred",
+                response.getBody().message()
+        );
+
+        assertEquals(
+                "/api/accounts",
                 response.getBody().path()
         );
 
