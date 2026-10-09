@@ -235,6 +235,56 @@ class GlobalExceptionHandlerTest {
 
 
     @Test
+    void shouldReturn500WhenUnexpectedExceptionOccurs() {
+
+        HttpServletRequest request =
+                mock(HttpServletRequest.class);
+
+        when(request.getRequestURI())
+                .thenReturn("/api/accounts");
+
+        Exception exception =
+                new RuntimeException("Sensitive internal database error");
+
+        ResponseEntity<ApiError> response =
+                handler.handleUnexpectedException(
+                        exception,
+                        request
+                );
+
+        assertEquals(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                response.getStatusCode()
+        );
+
+        assertNotNull(
+                response.getBody()
+        );
+
+        assertEquals(
+                500,
+                response.getBody().status()
+        );
+
+        assertEquals(
+                "INTERNAL_SERVER_ERROR",
+                response.getBody().code()
+        );
+
+        assertEquals(
+                "An unexpected error occurred",
+                response.getBody().message()
+        );
+
+        assertEquals(
+                "/api/accounts",
+                response.getBody().path()
+        );
+
+    }
+
+
+    @Test
     void shouldReturn403WhenAccessIsDenied() {
 
         HttpServletRequest request =
@@ -283,54 +333,5 @@ class GlobalExceptionHandlerTest {
 
     }
 
-
-    @Test
-    void shouldReturn500WhenUnexpectedExceptionOccurs() {
-
-        HttpServletRequest request =
-                mock(HttpServletRequest.class);
-
-        when(request.getRequestURI())
-                .thenReturn("/api/accounts");
-
-        Exception exception =
-                new RuntimeException("Sensitive internal database error");
-
-        ResponseEntity<ApiError> response =
-                handler.handleUnexpectedException(
-                        exception,
-                        request
-                );
-
-        assertEquals(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                response.getStatusCode()
-        );
-
-        assertNotNull(
-                response.getBody()
-        );
-
-        assertEquals(
-                500,
-                response.getBody().status()
-        );
-
-        assertEquals(
-                "INTERNAL_SERVER_ERROR",
-                response.getBody().code()
-        );
-
-        assertEquals(
-                "An unexpected error occurred",
-                response.getBody().message()
-        );
-
-        assertEquals(
-                "/api/accounts",
-                response.getBody().path()
-        );
-
-    }
 
 }
