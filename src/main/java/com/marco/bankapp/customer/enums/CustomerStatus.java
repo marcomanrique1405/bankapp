@@ -1,6 +1,6 @@
 package com.marco.bankapp.customer.enums;
 
-public enum CostumerStatus {
+public enum CustomerStatus {
     ACTIVE,
     INACTIVE
 }
