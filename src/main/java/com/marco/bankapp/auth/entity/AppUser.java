@@ -11,8 +11,8 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "app_users")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AppUser {
 
     @Id
