@@ -15,4 +15,4 @@ Development changes are integrated into the `develop` branch:
 3. Open a pull request targeting `develop`.
 4. Review and merge the pull request after the required checks pass.
 
-See [`docs/development-workflow.md`](docs/development-workflow.md) for more details.
+For additional details, see [`docs/development-workflow.md`](docs/development-workflow.md).
