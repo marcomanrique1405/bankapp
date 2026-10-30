@@ -1,6 +1,6 @@
 # BankApp
 
-Backend banking application built with Java and Spring Boot.
+A backend banking application built with Java and Spring Boot.
 
 ## Project overview
 
